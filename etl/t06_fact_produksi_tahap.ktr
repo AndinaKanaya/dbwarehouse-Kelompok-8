@@ -529,6 +529,246 @@
     </hop>
   </order>
   <step>
+    <name>Lookup aktual mulai</name>
+    <type>DBLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>dw_kelompok_8</connection>
+    <cache>Y</cache>
+    <cache_load_all>N</cache_load_all>
+    <cache_size>0</cache_size>
+    <lookup>
+      <schema/>
+      <table>dim_tanggal</table>
+      <orderby/>
+      <fail_on_multiple>N</fail_on_multiple>
+      <eat_row_on_failure>Y</eat_row_on_failure>
+      <key>
+        <name>key_aktual_mulai</name>
+        <field>tanggal_key</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>tanggal_key</name>
+        <rename>tanggal_aktual_mulai_key</rename>
+        <default>-1</default>
+        <type>Integer</type>
+      </value>
+    </lookup>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>272</xloc>
+      <yloc>560</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Lookup aktual selesai</name>
+    <type>DBLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>dw_kelompok_8</connection>
+    <cache>Y</cache>
+    <cache_load_all>N</cache_load_all>
+    <cache_size>0</cache_size>
+    <lookup>
+      <schema/>
+      <table>dim_tanggal</table>
+      <orderby/>
+      <fail_on_multiple>N</fail_on_multiple>
+      <eat_row_on_failure>Y</eat_row_on_failure>
+      <key>
+        <name>key_aktual_selesai</name>
+        <field>tanggal_key</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>tanggal_key</name>
+        <rename>tanggal_aktual_selesai_key</rename>
+        <default>-1</default>
+        <type>Integer</type>
+      </value>
+    </lookup>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>272</xloc>
+      <yloc>640</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Lookup jadwal mulai</name>
+    <type>DBLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>dw_kelompok_8</connection>
+    <cache>Y</cache>
+    <cache_load_all>N</cache_load_all>
+    <cache_size>0</cache_size>
+    <lookup>
+      <schema/>
+      <table>dim_tanggal</table>
+      <orderby/>
+      <fail_on_multiple>N</fail_on_multiple>
+      <eat_row_on_failure>N</eat_row_on_failure>
+      <key>
+        <name>key_jadwal_mulai</name>
+        <field>tanggal_key</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>tanggal_key</name>
+        <rename>tanggal_jadwal_mulai_key</rename>
+        <default>-1</default>
+        <type>Integer</type>
+      </value>
+    </lookup>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>272</xloc>
+      <yloc>368</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Lookup jadwal selesai</name>
+    <type>DBLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>dw_kelompok_8</connection>
+    <cache>Y</cache>
+    <cache_load_all>N</cache_load_all>
+    <cache_size>0</cache_size>
+    <lookup>
+      <schema/>
+      <table>dim_tanggal</table>
+      <orderby/>
+      <fail_on_multiple>N</fail_on_multiple>
+      <eat_row_on_failure>Y</eat_row_on_failure>
+      <key>
+        <name>key_jadwal_selesai</name>
+        <field>tanggal_key</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>tanggal_key</name>
+        <rename>tanggal_jadwal_selesai_key</rename>
+        <default>-1</default>
+        <type>Integer</type>
+      </value>
+    </lookup>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>272</xloc>
+      <yloc>464</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Lookup lokasi</name>
+    <type>DBLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>dw_kelompok_8</connection>
+    <cache>Y</cache>
+    <cache_load_all>N</cache_load_all>
+    <cache_size>0</cache_size>
+    <lookup>
+      <schema/>
+      <table>dim_lokasi</table>
+      <orderby/>
+      <fail_on_multiple>N</fail_on_multiple>
+      <eat_row_on_failure>N</eat_row_on_failure>
+      <key>
+        <name>locationid</name>
+        <field>lokasi_id</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>lokasi_key</name>
+        <rename>lokasi_key</rename>
+        <default>-1</default>
+        <type>Integer</type>
+      </value>
+    </lookup>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>272</xloc>
+      <yloc>256</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
     <name>Lookup produk</name>
     <type>DBLookup</type>
     <description/>
@@ -584,138 +824,6 @@
     </remotesteps>
     <GUI>
       <xloc>272</xloc>
-      <yloc>144</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Select values</name>
-    <type>SelectValues</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <fields>
-      <field>
-        <name>workorder_id</name>
-        <rename/>
-      </field>
-      <field>
-        <name>operation_sequence</name>
-        <rename/>
-      </field>
-      <field>
-        <name>jam_sumber_daya_aktual</name>
-        <rename/>
-      </field>
-      <field>
-        <name>biaya_rencana</name>
-        <rename/>
-      </field>
-      <field>
-        <name>biaya_aktual</name>
-        <rename/>
-      </field>
-      <field>
-        <name>selisih_biaya</name>
-        <rename/>
-      </field>
-      <field>
-        <name>durasi_aktual_hari</name>
-        <rename/>
-      </field>
-      <field>
-        <name>selisih_jadwal_hari</name>
-        <rename/>
-      </field>
-      <field>
-        <name>produk_key</name>
-        <rename/>
-      </field>
-      <field>
-        <name>lokasi_key</name>
-        <rename/>
-      </field>
-      <field>
-        <name>tanggal_jadwal_mulai_key</name>
-        <rename/>
-      </field>
-      <field>
-        <name>tanggal_jadwal_selesai_key</name>
-        <rename/>
-      </field>
-      <field>
-        <name>tanggal_aktual_mulai_key</name>
-        <rename/>
-      </field>
-      <field>
-        <name>tanggal_aktual_selesai_key</name>
-        <rename/>
-      </field>
-      <select_unspecified>N</select_unspecified>
-    </fields>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>400</xloc>
-      <yloc>144</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Table input</name>
-    <type>TableInput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>dw_kelompok_8</connection>
-    <sql>SELECT r.workorderid AS workorder_id,
-       r.operationsequence AS operation_sequence,
-       r.locationid,
-       w.productid,
-       w.startdate::date AS tgl_mulai_wo,
-       to_char(r.scheduledstartdate, 'YYYYMMDD')::int AS key_jadwal_mulai,
-       to_char(r.scheduledenddate,   'YYYYMMDD')::int AS key_jadwal_selesai,
-       to_char(r.actualstartdate,    'YYYYMMDD')::int AS key_aktual_mulai,
-       to_char(r.actualenddate,      'YYYYMMDD')::int AS key_aktual_selesai,
-       COALESCE(r.actualresourcehrs, 0) AS jam_sumber_daya_aktual,
-       COALESCE(r.plannedcost, 0)       AS biaya_rencana,
-       COALESCE(r.actualcost, 0)        AS biaya_aktual,
-       (r.actualcost - r.plannedcost)   AS selisih_biaya,
-       (r.actualenddate::date - r.actualstartdate::date)    AS durasi_aktual_hari,
-       (r.actualenddate::date - r.scheduledenddate::date)   AS selisih_jadwal_hari
-FROM stg_workorderrouting r
-JOIN stg_workorder w ON w.workorderid = r.workorderid;</sql>
-    <limit>0</limit>
-    <lookup/>
-    <execute_each_row>N</execute_each_row>
-    <variables_active>N</variables_active>
-    <lazy_conversion_active>N</lazy_conversion_active>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>144</xloc>
       <yloc>144</yloc>
       <draw>Y</draw>
     </GUI>
@@ -821,8 +929,8 @@ JOIN stg_workorder w ON w.workorderid = r.workorderid;</sql>
     </GUI>
   </step>
   <step>
-    <name>Lookup lokasi</name>
-    <type>DBLookup</type>
+    <name>Select values</name>
+    <type>SelectValues</type>
     <description/>
     <distribute>Y</distribute>
     <custom_distribution/>
@@ -831,29 +939,51 @@ JOIN stg_workorder w ON w.workorderid = r.workorderid;</sql>
       <method>none</method>
       <schema_name/>
     </partitioning>
-    <connection>dw_kelompok_8</connection>
-    <cache>Y</cache>
-    <cache_load_all>N</cache_load_all>
-    <cache_size>0</cache_size>
-    <lookup>
-      <schema/>
-      <table>dim_lokasi</table>
-      <orderby/>
-      <fail_on_multiple>N</fail_on_multiple>
-      <eat_row_on_failure>N</eat_row_on_failure>
-      <key>
-        <name>locationid</name>
-        <field>lokasi_id</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <value>
+    <fields>
+      <field>
+        <name>workorder_id</name>
+      </field>
+      <field>
+        <name>operation_sequence</name>
+      </field>
+      <field>
+        <name>jam_sumber_daya_aktual</name>
+      </field>
+      <field>
+        <name>biaya_rencana</name>
+      </field>
+      <field>
+        <name>biaya_aktual</name>
+      </field>
+      <field>
+        <name>selisih_biaya</name>
+      </field>
+      <field>
+        <name>durasi_aktual_hari</name>
+      </field>
+      <field>
+        <name>selisih_jadwal_hari</name>
+      </field>
+      <field>
+        <name>produk_key</name>
+      </field>
+      <field>
         <name>lokasi_key</name>
-        <rename>lokasi_key</rename>
-        <default>-1</default>
-        <type>Integer</type>
-      </value>
-    </lookup>
+      </field>
+      <field>
+        <name>tanggal_jadwal_mulai_key</name>
+      </field>
+      <field>
+        <name>tanggal_jadwal_selesai_key</name>
+      </field>
+      <field>
+        <name>tanggal_aktual_mulai_key</name>
+      </field>
+      <field>
+        <name>tanggal_aktual_selesai_key</name>
+      </field>
+      <select_unspecified>N</select_unspecified>
+    </fields>
     <attributes/>
     <cluster_schema/>
     <remotesteps>
@@ -863,14 +993,14 @@ JOIN stg_workorder w ON w.workorderid = r.workorderid;</sql>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>272</xloc>
-      <yloc>256</yloc>
+      <xloc>400</xloc>
+      <yloc>144</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
   <step>
-    <name>Lookup jadwal mulai</name>
-    <type>DBLookup</type>
+    <name>Table input</name>
+    <type>TableInput</type>
     <description/>
     <distribute>Y</distribute>
     <custom_distribution/>
@@ -880,28 +1010,28 @@ JOIN stg_workorder w ON w.workorderid = r.workorderid;</sql>
       <schema_name/>
     </partitioning>
     <connection>dw_kelompok_8</connection>
-    <cache>Y</cache>
-    <cache_load_all>N</cache_load_all>
-    <cache_size>0</cache_size>
-    <lookup>
-      <schema/>
-      <table>dim_tanggal</table>
-      <orderby/>
-      <fail_on_multiple>N</fail_on_multiple>
-      <eat_row_on_failure>N</eat_row_on_failure>
-      <key>
-        <name>key_jadwal_mulai</name>
-        <field>tanggal_key</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <value>
-        <name>tanggal_key</name>
-        <rename>tanggal_jadwal_mulai_key</rename>
-        <default>-1</default>
-        <type>Integer</type>
-      </value>
-    </lookup>
+    <sql>SELECT r.workorderid AS workorder_id,
+       r.operationsequence AS operation_sequence,
+       r.locationid,
+       w.productid,
+       w.startdate::date AS tgl_mulai_wo,
+       to_char(r.scheduledstartdate, 'YYYYMMDD')::int AS key_jadwal_mulai,
+       to_char(r.scheduledenddate,   'YYYYMMDD')::int AS key_jadwal_selesai,
+       to_char(r.actualstartdate,    'YYYYMMDD')::int AS key_aktual_mulai,
+       to_char(r.actualenddate,      'YYYYMMDD')::int AS key_aktual_selesai,
+       COALESCE(r.actualresourcehrs, 0) AS jam_sumber_daya_aktual,
+       COALESCE(r.plannedcost, 0)       AS biaya_rencana,
+       COALESCE(r.actualcost, 0)        AS biaya_aktual,
+       (r.actualcost - r.plannedcost)   AS selisih_biaya,
+       (r.actualenddate::date - r.actualstartdate::date)    AS durasi_aktual_hari,
+       (r.actualenddate::date - r.scheduledenddate::date)   AS selisih_jadwal_hari
+FROM stg_workorderrouting r
+JOIN stg_workorder w ON w.workorderid = r.workorderid;</sql>
+    <limit>0</limit>
+    <lookup/>
+    <execute_each_row>N</execute_each_row>
+    <variables_active>N</variables_active>
+    <lazy_conversion_active>N</lazy_conversion_active>
     <attributes/>
     <cluster_schema/>
     <remotesteps>
@@ -911,152 +1041,8 @@ JOIN stg_workorder w ON w.workorderid = r.workorderid;</sql>
       </output>
     </remotesteps>
     <GUI>
-      <xloc>272</xloc>
-      <yloc>368</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Lookup jadwal selesai</name>
-    <type>DBLookup</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>dw_kelompok_8</connection>
-    <cache>Y</cache>
-    <cache_load_all>N</cache_load_all>
-    <cache_size>0</cache_size>
-    <lookup>
-      <schema/>
-      <table>dim_tanggal</table>
-      <orderby/>
-      <fail_on_multiple>N</fail_on_multiple>
-      <eat_row_on_failure>Y</eat_row_on_failure>
-      <key>
-        <name>key_jadwal_selesai</name>
-        <field>tanggal_key</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <value>
-        <name>tanggal_key</name>
-        <rename>tanggal_jadwal_selesai_key</rename>
-        <default>-1</default>
-        <type>Integer</type>
-      </value>
-    </lookup>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>272</xloc>
-      <yloc>464</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Lookup aktual mulai</name>
-    <type>DBLookup</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>dw_kelompok_8</connection>
-    <cache>Y</cache>
-    <cache_load_all>N</cache_load_all>
-    <cache_size>0</cache_size>
-    <lookup>
-      <schema/>
-      <table>dim_tanggal</table>
-      <orderby/>
-      <fail_on_multiple>N</fail_on_multiple>
-      <eat_row_on_failure>Y</eat_row_on_failure>
-      <key>
-        <name>key_aktual_mulai</name>
-        <field>tanggal_key</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <value>
-        <name>tanggal_key</name>
-        <rename>tanggal_aktual_mulai_key</rename>
-        <default>-1</default>
-        <type>Integer</type>
-      </value>
-    </lookup>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>272</xloc>
-      <yloc>560</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Lookup aktual selesai</name>
-    <type>DBLookup</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>dw_kelompok_8</connection>
-    <cache>Y</cache>
-    <cache_load_all>N</cache_load_all>
-    <cache_size>0</cache_size>
-    <lookup>
-      <schema/>
-      <table>dim_tanggal</table>
-      <orderby/>
-      <fail_on_multiple>N</fail_on_multiple>
-      <eat_row_on_failure>Y</eat_row_on_failure>
-      <key>
-        <name>key_aktual_selesai</name>
-        <field>tanggal_key</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <value>
-        <name>tanggal_key</name>
-        <rename>tanggal_aktual_selesai_key</rename>
-        <default>-1</default>
-        <type>Integer</type>
-      </value>
-    </lookup>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>272</xloc>
-      <yloc>640</yloc>
+      <xloc>144</xloc>
+      <yloc>144</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
