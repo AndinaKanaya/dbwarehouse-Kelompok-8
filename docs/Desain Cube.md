@@ -7,7 +7,7 @@
 | Nama Cube | Produksi | fact\_produksi |
 | Dimensi Waktu | Tahun \> Kuartal \> Bulan \> Tanggal | Dim\_tanggal lewat tanggal\_mulai\_key |
 | Dimensi Produk | Kategori \> Subkategori \> Produk | Dim\_produk lewat produk\_key |
-| Dimensi alasan scrap | Alasan Scrap (satu lvl) | Dim\_alasan\_scrap lewat tanggal\_jatuh\_tempo\_key |
+| Dimensi alasan scrap | Alasan Scrap (satu lvl) | Dim\_alasan\_scrap lewat alasan\_scrap\_key |
 | Degenerate Dimension | Work Order | workorder\_id |
 | Measure | Jumlah Diproduksi (sum), Jumlah Masuk Stok (sum), Jumlah Scrap (sum), Jumlah Work Order (distinct count), Total Lama Produksi (sum), Jumlah WO Selesai (count lama\_produksi\_hari), Total Hari Terlambat (sum) | Dari table fakta (orderqty, stockedqty, scrappedqty, workorder\_id, lama\_produksi\_hari, hari\_terlambat) |
 | Calculated Member | Persentase Scrap % \= Jumlah Scrap / Jumlah Diproduksi; Persentase Masuk Stok % \= Jumlah Masuk Stok / Jumlah Diproduksi; Rata-rata Lama Produksi \= Total Lama Produksi / Jumlah WO Selesai | Dihitung di cube |
@@ -16,7 +16,7 @@
 
 | Elemen | Produksi Tahap | Asal di DW |
 | :---- | :---- | :---- |
-| Nama Cube | Produksi Tahap | pact\_produksi\_tahap |
+| Nama Cube | Produksi Tahap | fact\_produksi\_tahap |
 | Dimensi Jadwal Mulai | Tahun \> Kuartal \> Bulan \> Tanggal | Dim\_tanggal lewat tanggal\_jadwal\_mulai\_key |
 | Dimensi Jadwal Selesai | Tahun \> Kuartal \> Bulan \> Tanggal | Dim\_tanggal lewat tanggal\_jadwal\_selesai\_key |
 | Dimensi Aktual Mulai | Tahun \> Kuartal \> Bulan \> Tanggal | Dim\_tanggal lewat tanggal\_aktual\_mulai\_key |
