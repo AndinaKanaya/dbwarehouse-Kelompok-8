@@ -1,0 +1,128 @@
+-- ---------------------------------------------------------------------
+-- [Pertanyaan 1a] Total unit diproduksi dan masuk stok tiap bulan
+-- Cube: Produksi | Dimensi: Tanggal Mulai (Bulan)
+-- ---------------------------------------------------------------------
+SELECT
+  {[Measures].[Jumlah Diproduksi], [Measures].[Jumlah Masuk Stok]} ON COLUMNS,
+  NON EMPTY [Tanggal Mulai].[Bulan].Members ON ROWS
+FROM [Produksi]
+
+
+-- ---------------------------------------------------------------------
+-- [Pertanyaan 1b] Bulan dengan jumlah diproduksi tertinggi
+-- ---------------------------------------------------------------------
+SELECT
+  {[Measures].[Jumlah Diproduksi], [Measures].[Jumlah Masuk Stok]} ON COLUMNS,
+  TopCount([Tanggal Mulai].[Bulan].Members, 1, [Measures].[Jumlah Diproduksi]) ON ROWS
+FROM [Produksi]
+
+
+-- ---------------------------------------------------------------------
+-- [Pertanyaan 2] Produk yang menghasilkan scrap paling banyak (10 teratas)
+-- Cube: Produksi | Dimensi: Produk
+-- ---------------------------------------------------------------------
+SELECT
+  {[Measures].[Jumlah Scrap]} ON COLUMNS,
+  TopCount([Produk].[Produk].Members, 10, [Measures].[Jumlah Scrap]) ON ROWS
+FROM [Produksi]
+
+
+-- ---------------------------------------------------------------------
+-- [Pertanyaan 3] Alasan scrap yang paling banyak menyebabkan unit terbuang
+-- Cube: Produksi | Dimensi: Alasan Scrap
+-- Baris khusus "Tidak ada scrap" dan "Tidak diketahui" dikeluarkan
+-- ---------------------------------------------------------------------
+SELECT
+  {[Measures].[Jumlah Scrap], [Measures].[Jumlah Diproduksi]} ON COLUMNS,
+  Order(
+    Filter([Alasan Scrap].[Alasan Scrap].Members,
+           [Alasan Scrap].CurrentMember.Name <> "Tidak ada scrap"
+       AND [Alasan Scrap].CurrentMember.Name <> "Tidak diketahui"),
+    [Measures].[Jumlah Scrap], BDESC) ON ROWS
+FROM [Produksi]
+
+
+-- ---------------------------------------------------------------------
+-- [Pertanyaan 4] Kategori produk dengan rata-rata lama produksi terlama
+-- Cube: Produksi | Calculated member: Rata-rata Lama Produksi
+-- Hanya work order yang sudah selesai (pembagi = Jumlah WO Selesai)
+-- ---------------------------------------------------------------------
+SELECT
+  {[Measures].[Rata-rata Lama Produksi]} ON COLUMNS,
+  Order([Produk].[Kategori].Members,
+        [Measures].[Rata-rata Lama Produksi], BDESC) ON ROWS
+FROM [Produksi]
+
+
+-- ---------------------------------------------------------------------
+-- [Pertanyaan 5] Tren persentase scrap tiap kuartal
+-- Cube: Produksi | Calculated member: Persentase Scrap %
+-- ---------------------------------------------------------------------
+SELECT
+  {[Measures].[Persentase Scrap %]} ON COLUMNS,
+  NON EMPTY [Tanggal Mulai].[Kuartal].Members ON ROWS
+FROM [Produksi]
+
+
+-- ---------------------------------------------------------------------
+-- [Pertanyaan 6] Alasan scrap paling dominan pada tiap produk per tahun
+-- Cube: Produksi | Dimensi: Alasan Scrap, Produk, Tanggal Mulai (Tahun)
+-- Untuk setiap pasangan (tahun, produk) diambil 1 alasan dengan scrap terbesar
+-- ---------------------------------------------------------------------
+WITH SET [Alasan Valid] AS
+  Filter([Alasan Scrap].[Alasan Scrap].Members,
+         [Alasan Scrap].CurrentMember.Name <> "Tidak ada scrap"
+     AND [Alasan Scrap].CurrentMember.Name <> "Tidak diketahui")
+SELECT
+  {[Measures].[Jumlah Scrap]} ON COLUMNS,
+  Generate(
+    NonEmptyCrossJoin([Tanggal Mulai].[Tahun].Members, [Produk].[Produk].Members),
+    TopCount(
+      {[Tanggal Mulai].CurrentMember} * {[Produk].CurrentMember} * [Alasan Valid],
+      1, [Measures].[Jumlah Scrap])
+  ) ON ROWS
+FROM [Produksi]
+
+
+-- ---------------------------------------------------------------------
+-- [Pertanyaan 7] Lokasi kerja yang rata-rata paling terlambat dari jadwal
+-- Cube: Produksi Tahap | Dimensi: Lokasi
+-- Selisih jadwal = tanggal aktual selesai dikurangi tanggal jadwal selesai (hari);
+-- positif = terlambat. Rata-rata hanya dari operasi yang selisihnya terisi.
+-- Urutan teratas = paling terlambat
+-- ---------------------------------------------------------------------
+SELECT
+  {[Measures].[Selisih Jadwal], [Measures].[Jumlah Operasi Selisih Jadwal],
+   [Measures].[Rata-rata Selisih Jadwal]} ON COLUMNS,
+  NON EMPTY Order(
+    Filter([Lokasi].[Lokasi].Members,
+           [Lokasi].CurrentMember.Name <> "Tidak diketahui"),
+    [Measures].[Rata-rata Selisih Jadwal], BDESC) ON ROWS
+FROM [Produksi Tahap]
+
+
+-- ---------------------------------------------------------------------
+-- [Pertanyaan 8] Lokasi kerja dengan selisih biaya aktual terhadap biaya
+-- rencana paling besar
+-- Cube: Produksi Tahap | Dimensi: Lokasi
+-- Selisih Biaya = biaya aktual dikurangi biaya rencana; positif = melebihi rencana.
+-- Urutan teratas = selisih terbesar
+-- ---------------------------------------------------------------------
+SELECT
+  {[Measures].[Biaya Rencana], [Measures].[Biaya Aktual], [Measures].[Selisih Biaya]} ON COLUMNS,
+  NON EMPTY Order(
+    Filter([Lokasi].[Lokasi].Members,
+           [Lokasi].CurrentMember.Name <> "Tidak diketahui"),
+    [Measures].[Selisih Biaya], BDESC) ON ROWS
+FROM [Produksi Tahap]
+
+
+-- ---------------------------------------------------------------------
+-- [Tambahan, di luar 8 pertanyaan piagam] Rata-rata durasi aktual dan
+-- persentase selisih biaya per lokasi kerja
+-- Cube: Produksi Tahap | Dimensi: Lokasi
+-- ---------------------------------------------------------------------
+SELECT
+  {[Measures].[Rata-rata Durasi Aktual], [Measures].[Persentase Selisih Biaya %]} ON COLUMNS,
+  NON EMPTY [Lokasi].[Lokasi].Members ON ROWS
+FROM [Produksi Tahap]

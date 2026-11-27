@@ -105,7 +105,11 @@
     <Measure name="Jumlah Operasi" column="operation_sequence" aggregator="count" formatString="#,##0"/>
     <!-- count mengabaikan NULL: hanya operasi dengan tanggal aktual lengkap -->
     <Measure name="Jumlah Operasi Selesai" column="durasi_aktual_hari" aggregator="count" formatString="#,##0"/>
+    <!-- count mengabaikan NULL: hanya operasi dengan tanggal aktual selesai dan jadwal selesai terisi (pertanyaan 7) -->
+    <Measure name="Jumlah Operasi Selisih Jadwal" column="selisih_jadwal_hari" aggregator="count" formatString="#,##0"/>
 
+    <CalculatedMember name="Rata-rata Selisih Jadwal" dimension="Measures" formatString="#,##0.0000"
+      formula="IIF([Measures].[Jumlah Operasi Selisih Jadwal] = 0, NULL, [Measures].[Selisih Jadwal] / [Measures].[Jumlah Operasi Selisih Jadwal])"/>
     <CalculatedMember name="Rata-rata Durasi Aktual" dimension="Measures" formatString="#,##0.0000"
       formula="IIF([Measures].[Jumlah Operasi Selesai] = 0, NULL, [Measures].[Durasi Aktual] / [Measures].[Jumlah Operasi Selesai])"/>
     <CalculatedMember name="Persentase Selisih Biaya %" dimension="Measures" formatString="0.0000%"
