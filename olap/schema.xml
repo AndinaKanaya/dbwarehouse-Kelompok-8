@@ -1,108 +1,101 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Schema name="dw_kelompok_8">
 
-  <!-- SHARED DIMENSIONS (Dipakai bersama oleh kedua Cube) -->
-  <Dimension name="Waktu" type="TimeDimension">
-    <Hierarchy hasAll="true" allMemberName="Semua Waktu" primaryKey="tanggal_key">
+  <!-- ===================== SHARED DIMENSIONS ===================== -->
+
+  <Dimension name="Tanggal" type="TimeDimension">
+    <Hierarchy hasAll="true" allMemberName="Semua Tanggal" primaryKey="tanggal_key">
       <Table name="dim_tanggal"/>
-      <Level name="Tahun" column="tahun" type="Numeric" uniqueMembers="true" levelType="TimeYears"/>
-      <Level name="Kuartal" column="kuartal" type="Numeric" uniqueMembers="false" levelType="TimeQuarters">
-        <NameExpression>
-          <SQL dialect="generic">CONCAT('Q', kuartal)</SQL>
-        </NameExpression>
-      </Level>
+      <Level name="Tahun" column="tahun" type="Integer" uniqueMembers="true"
+             levelType="TimeYears"/>
+      <Level name="Kuartal" column="kuartal" type="Integer" uniqueMembers="false"
+             levelType="TimeQuarters"/>
+      <!-- Urutan bulan memakai kolom angka (bulan), nama tampilan dari nama_bulan -->
       <Level name="Bulan" column="bulan" nameColumn="nama_bulan" ordinalColumn="bulan"
-             type="Numeric" uniqueMembers="false" levelType="TimeMonths"/>
-      <Level name="Tanggal" column="tanggal_dalam_bulan" type="Numeric" uniqueMembers="false" levelType="TimeDays"/>
+             type="Integer" uniqueMembers="false" levelType="TimeMonths"/>
+      <Level name="Tanggal" column="tanggal" type="Date" uniqueMembers="true"
+             levelType="TimeDays"/>
     </Hierarchy>
   </Dimension>
 
+  <!-- Level Produk memakai produk_id (bukan produk_key) karena dim_produk SCD tipe 2:
+       satu produk bisa punya beberapa baris/versi -->
   <Dimension name="Produk">
     <Hierarchy hasAll="true" allMemberName="Semua Produk" primaryKey="produk_key">
       <Table name="dim_produk"/>
       <Level name="Kategori" column="kategori" type="String" uniqueMembers="true"/>
-      <Level name="Subkategori" column="subkategori" type="String" uniqueMembers="true"/>
-      <Level name="Produk" column="produk_id" nameColumn="nama_produk" type="Numeric" uniqueMembers="true"/>
+      <Level name="Subkategori" column="subkategori" type="String" uniqueMembers="false"/>
+      <Level name="Produk" column="produk_id" nameColumn="nama_produk"
+             type="Integer" uniqueMembers="true"/>
     </Hierarchy>
   </Dimension>
 
-  <!-- CUBE 1: PRODUKSI -->
+  <!-- Kunci level memakai surrogate key supaya baris khusus (-1, 0) tidak menyatu -->
+  <Dimension name="Alasan Scrap">
+    <Hierarchy hasAll="true" allMemberName="Semua Alasan" primaryKey="alasan_scrap_key">
+      <Table name="dim_alasan_scrap"/>
+      <Level name="Alasan Scrap" column="alasan_scrap_key" nameColumn="nama_alasan"
+             type="Integer" uniqueMembers="true"/>
+    </Hierarchy>
+  </Dimension>
+
+  <Dimension name="Lokasi">
+    <Hierarchy hasAll="true" allMemberName="Semua Lokasi" primaryKey="lokasi_key">
+      <Table name="dim_lokasi"/>
+      <Level name="Lokasi" column="lokasi_key" nameColumn="nama_lokasi"
+             type="Integer" uniqueMembers="true"/>
+    </Hierarchy>
+  </Dimension>
+
+  <!-- ===================== CUBE 1: PRODUKSI ===================== -->
+
   <Cube name="Produksi">
     <Table name="fact_produksi"/>
 
-    <DimensionUsage name="Waktu" source="Waktu" foreignKey="tanggal_mulai_key"/>
+    <DimensionUsage name="Tanggal Mulai" source="Tanggal" foreignKey="tanggal_mulai_key"/>
+    <DimensionUsage name="Tanggal Selesai" source="Tanggal" foreignKey="tanggal_selesai_key"/>
+    <DimensionUsage name="Tanggal Jatuh Tempo" source="Tanggal" foreignKey="tanggal_jatuh_tempo_key"/>
     <DimensionUsage name="Produk" source="Produk" foreignKey="produk_key"/>
+    <DimensionUsage name="Alasan Scrap" source="Alasan Scrap" foreignKey="alasan_scrap_key"/>
 
-    <Dimension name="Alasan Scrap" foreignKey="alasan_scrap_key">
-      <Hierarchy hasAll="true" allMemberName="Semua Alasan Scrap" primaryKey="alasan_scrap_key">
-        <Table name="dim_alasan_scrap"/>
-        <!-- Sesuaikan column="nama_alasan" dengan nama kolom deskripsi di dim_alasan_scrap -->
-        <Level name="Alasan Scrap" column="nama_alasan" type="String" uniqueMembers="true"/>
-      </Hierarchy>
-    </Dimension>
-
-    <!-- Degenerate Dimension: tanpa foreignKey dan tanpa <Table> -->
+    <!-- Opsional: degenerate dimension Work Order untuk drill-through.
+         Aktifkan hanya jika diperlukan dan tidak menimbulkan elemen merah.
     <Dimension name="Work Order">
-      <Hierarchy hasAll="true" allMemberName="Semua Work Order">
-        <Level name="Work Order" column="workorder_id" type="Numeric" uniqueMembers="true"/>
+      <Hierarchy hasAll="true">
+        <Level name="Work Order" column="workorder_id" type="Integer" uniqueMembers="true"/>
       </Hierarchy>
     </Dimension>
+    -->
 
-    <!-- Measures Cube Produksi -->
     <Measure name="Jumlah Diproduksi" column="orderqty" aggregator="sum" formatString="#,##0"/>
     <Measure name="Jumlah Masuk Stok" column="stockedqty" aggregator="sum" formatString="#,##0"/>
     <Measure name="Jumlah Scrap" column="scrappedqty" aggregator="sum" formatString="#,##0"/>
-    <Measure name="Jumlah Work Order" column="workorder_id" aggregator="distinct-count" formatString="#,##0"/>
+    <Measure name="Jumlah Work Order" column="workorder_id" aggregator="count" formatString="#,##0"/>
     <Measure name="Total Lama Produksi" column="lama_produksi_hari" aggregator="sum" formatString="#,##0"/>
+    <!-- count mengabaikan NULL: hanya work order yang sudah selesai -->
     <Measure name="Jumlah WO Selesai" column="lama_produksi_hari" aggregator="count" formatString="#,##0"/>
     <Measure name="Total Hari Terlambat" column="hari_terlambat" aggregator="sum" formatString="#,##0"/>
 
-    <!-- Calculated Members Cube Produksi -->
-    <CalculatedMember name="Persentase Scrap %" dimension="Measures"
-        formula="IIf([Measures].[Jumlah Diproduksi] = 0, NULL, [Measures].[Jumlah Scrap] / [Measures].[Jumlah Diproduksi])">
-      <CalculatedMemberProperty name="FORMAT_STRING" value="0.0%"/>
-    </CalculatedMember>
-    <CalculatedMember name="Persentase Masuk Stok %" dimension="Measures"
-        formula="IIf([Measures].[Jumlah Diproduksi] = 0, NULL, [Measures].[Jumlah Masuk Stok] / [Measures].[Jumlah Diproduksi])">
-      <CalculatedMemberProperty name="FORMAT_STRING" value="0.0%"/>
-    </CalculatedMember>
-    <CalculatedMember name="Rata-rata Lama Produksi" dimension="Measures"
-        formula="IIf([Measures].[Jumlah WO Selesai] = 0, NULL, [Measures].[Total Lama Produksi] / [Measures].[Jumlah WO Selesai])">
-      <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0.0"/>
-    </CalculatedMember>
+    <CalculatedMember name="Persentase Scrap %" dimension="Measures" formatString="0.0000%"
+      formula="IIF([Measures].[Jumlah Diproduksi] = 0, NULL, [Measures].[Jumlah Scrap] / [Measures].[Jumlah Diproduksi])"/>
+    <CalculatedMember name="Persentase Masuk Stok %" dimension="Measures" formatString="0.0000%"
+      formula="IIF([Measures].[Jumlah Diproduksi] = 0, NULL, [Measures].[Jumlah Masuk Stok] / [Measures].[Jumlah Diproduksi])"/>
+    <CalculatedMember name="Rata-rata Lama Produksi" dimension="Measures" formatString="#,##0.0000"
+      formula="IIF([Measures].[Jumlah WO Selesai] = 0, NULL, [Measures].[Total Lama Produksi] / [Measures].[Jumlah WO Selesai])"/>
   </Cube>
 
-  <!-- CUBE 2: PRODUKSI TAHAP -->
+  <!-- ===================== CUBE 2: PRODUKSI TAHAP ===================== -->
+
   <Cube name="Produksi Tahap">
     <Table name="fact_produksi_tahap"/>
 
-    <DimensionUsage name="Jadwal Mulai" source="Waktu" foreignKey="tanggal_jadwal_mulai_key"/>
-    <DimensionUsage name="Jadwal Selesai" source="Waktu" foreignKey="tanggal_jadwal_selesai_key"/>
-    <DimensionUsage name="Aktual Mulai" source="Waktu" foreignKey="tanggal_aktual_mulai_key"/>
-    <DimensionUsage name="Aktual Selesai" source="Waktu" foreignKey="tanggal_aktual_selesai_key"/>
+    <DimensionUsage name="Jadwal Mulai" source="Tanggal" foreignKey="tanggal_jadwal_mulai_key"/>
+    <DimensionUsage name="Jadwal Selesai" source="Tanggal" foreignKey="tanggal_jadwal_selesai_key"/>
+    <DimensionUsage name="Aktual Mulai" source="Tanggal" foreignKey="tanggal_aktual_mulai_key"/>
+    <DimensionUsage name="Aktual Selesai" source="Tanggal" foreignKey="tanggal_aktual_selesai_key"/>
     <DimensionUsage name="Produk" source="Produk" foreignKey="produk_key"/>
+    <DimensionUsage name="Lokasi" source="Lokasi" foreignKey="lokasi_key"/>
 
-    <Dimension name="Lokasi" foreignKey="lokasi_key">
-      <Hierarchy hasAll="true" allMemberName="Semua Lokasi" primaryKey="lokasi_key">
-        <Table name="dim_lokasi"/>
-        <!-- Sesuaikan column="nama_lokasi" dengan nama kolom di dim_lokasi -->
-        <Level name="Lokasi" column="nama_lokasi" type="String" uniqueMembers="true"/>
-      </Hierarchy>
-    </Dimension>
-
-    <!-- Degenerate Dimensions -->
-    <Dimension name="Work Order">
-      <Hierarchy hasAll="true" allMemberName="Semua Work Order">
-        <Level name="Work Order" column="workorder_id" type="Numeric" uniqueMembers="true"/>
-      </Hierarchy>
-    </Dimension>
-    <Dimension name="Urutan Operasi">
-      <Hierarchy hasAll="true" allMemberName="Semua Urutan">
-        <Level name="Urutan Operasi" column="operation_sequence" type="Numeric" uniqueMembers="true"/>
-      </Hierarchy>
-    </Dimension>
-
-    <!-- Measures Cube Produksi Tahap -->
     <Measure name="Jam Sumber Daya Aktual" column="jam_sumber_daya_aktual" aggregator="sum" formatString="#,##0.00"/>
     <Measure name="Biaya Rencana" column="biaya_rencana" aggregator="sum" formatString="#,##0.00"/>
     <Measure name="Biaya Aktual" column="biaya_aktual" aggregator="sum" formatString="#,##0.00"/>
@@ -110,17 +103,13 @@
     <Measure name="Durasi Aktual" column="durasi_aktual_hari" aggregator="sum" formatString="#,##0"/>
     <Measure name="Selisih Jadwal" column="selisih_jadwal_hari" aggregator="sum" formatString="#,##0"/>
     <Measure name="Jumlah Operasi" column="operation_sequence" aggregator="count" formatString="#,##0"/>
+    <!-- count mengabaikan NULL: hanya operasi dengan tanggal aktual lengkap -->
     <Measure name="Jumlah Operasi Selesai" column="durasi_aktual_hari" aggregator="count" formatString="#,##0"/>
 
-    <!-- Calculated Members Cube Produksi Tahap -->
-    <CalculatedMember name="Persentase Selisih Biaya %" dimension="Measures"
-        formula="IIf([Measures].[Biaya Rencana] = 0, NULL, [Measures].[Selisih Biaya] / [Measures].[Biaya Rencana])">
-      <CalculatedMemberProperty name="FORMAT_STRING" value="0.0%"/>
-    </CalculatedMember>
-    <CalculatedMember name="Rata-rata Durasi Aktual" dimension="Measures"
-        formula="IIf([Measures].[Jumlah Operasi] = 0, NULL, [Measures].[Durasi Aktual] / [Measures].[Jumlah Operasi])">
-      <CalculatedMemberProperty name="FORMAT_STRING" value="#,##0.0"/>
-    </CalculatedMember>
+    <CalculatedMember name="Rata-rata Durasi Aktual" dimension="Measures" formatString="#,##0.0000"
+      formula="IIF([Measures].[Jumlah Operasi Selesai] = 0, NULL, [Measures].[Durasi Aktual] / [Measures].[Jumlah Operasi Selesai])"/>
+    <CalculatedMember name="Persentase Selisih Biaya %" dimension="Measures" formatString="0.0000%"
+      formula="IIF([Measures].[Biaya Rencana] = 0, NULL, [Measures].[Selisih Biaya] / [Measures].[Biaya Rencana])"/>
   </Cube>
 
 </Schema>
